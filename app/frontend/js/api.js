@@ -78,4 +78,6 @@ export const api = {
   taxSimulate:      (body)  => apiFetch('/api/tax/simulate',               { method: 'POST', body: JSON.stringify(body) }),
   quantLeanList:    ()      => apiFetch('/api/quant/lean'),
   quantLean:        (symbol) => apiFetch(`/api/quant/lean/${encodeURIComponent(symbol)}`),
+  llmBenchStatus:   ()      => apiFetch('/api/llm-bench/status'),
+  llmBenchChat:     (body)  => apiFetch('/api/llm-bench/chat',              { method: 'POST', body: JSON.stringify(body) }),
 };

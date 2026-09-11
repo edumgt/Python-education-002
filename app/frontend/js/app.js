@@ -44,6 +44,7 @@ import { investmentTreeView }   from './views/investmentTree.js';
 import { quizHomeView, quizDayView } from './views/quiz.js';
 import { vocabularyExamView } from './views/vocabularyExam.js';
 import { ragChatView } from './views/ragChat.js';
+import { llmBenchView } from './views/llmBenchView.js';
 import { companyFinancialView } from './views/companyFinancial.js';
 // 학습 화면 오류 수정본을 기존 ES 모듈 캐시와 분리해 항상 새로 불러온다.
 import { learnView }            from './views/learn.js?v=35';
@@ -233,6 +234,7 @@ const routes = {
   'quiz-home':           { label: '퀴즈 · 통합 모의고사',        render: () => quizHomeView(app, navigate) },
   'vocabulary-exam':     { label: '퀴즈 · 단어장 30문제 시험',   render: () => vocabularyExamView(app, navigate) },
   'rag-chat':            { label: '문서 검색 채팅',              render: () => ragChatView(app) },
+  'llm-bench':           { label: 'LLM 서빙 방식 비교(AWS)',     render: () => llmBenchView(app) },
   ...quizDayRoutes,
   ...learnRoutes,
 };

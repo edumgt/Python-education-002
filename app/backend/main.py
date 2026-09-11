@@ -125,6 +125,7 @@ try:
     from .routers.rag import router as rag_router
     from .routers.lex import router as lex_router
     from .routers.auth import router as auth_router
+    from .routers.llm_bench import router as llm_bench_router
     from . import pattern_detection
 except ImportError:  # Allows `uvicorn main:app` from app/backend.
     from routers.ml import router as ml_router  # type: ignore
@@ -136,6 +137,7 @@ except ImportError:  # Allows `uvicorn main:app` from app/backend.
     from routers.rag import router as rag_router  # type: ignore
     from routers.lex import router as lex_router  # type: ignore
     from routers.auth import router as auth_router  # type: ignore
+    from routers.llm_bench import router as llm_bench_router  # type: ignore
     import pattern_detection  # type: ignore
 app.include_router(ml_router)
 app.include_router(quant_router)
@@ -3885,6 +3887,7 @@ def dart_financial_analysis(req: DartFinancialAnalysisRequest) -> dict:
 
 app.include_router(tax_router)
 app.include_router(rag_router)
+app.include_router(llm_bench_router)
 install_openapi(app)
 
 # ─────────────────────────────────────────────────────────────────────────────

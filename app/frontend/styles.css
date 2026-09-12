@@ -777,19 +777,17 @@ body.modal-open { overflow: hidden; }
 .macro-news-disclaimer { margin: 16px clamp(24px, 3vw, 42px) 28px; color: #94a3b8; font-size: clamp(.8rem, 1.15vw, .95rem); line-height: 1.55; }
 .chart-drawing-offcanvas-backdrop { position: fixed; z-index: 1200; inset: 0; display: none; background: rgba(15,23,42,.42); backdrop-filter: blur(1px); }
 .chart-drawing-offcanvas-backdrop.show { display: block; }
-.chart-drawing-offcanvas { position: fixed; top: 0; right: 0; width: min(1640px, 96vw); max-width: 100%; height: 100vh; overflow: auto; background: #fff; border-left: 1px solid #cbd5e1; box-shadow: -24px 0 70px rgba(15,23,42,.28); transform: translateX(100%); transition: transform .25s cubic-bezier(.4,0,.2,1); }
+.chart-drawing-offcanvas { position: fixed; top: 0; right: 0; width: 100vw; max-width: 100%; height: 100vh; overflow: auto; background: #fff; border-left: 1px solid #cbd5e1; box-shadow: -24px 0 70px rgba(15,23,42,.28); transform: translateX(100%); transition: transform .25s cubic-bezier(.4,0,.2,1); }
 .chart-drawing-offcanvas-backdrop.show .chart-drawing-offcanvas { transform: translateX(0); }
-.chart-drawing-offcanvas-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: clamp(18px, 2.2vw, 30px) clamp(20px, 3vw, 42px); border-bottom: 1px solid #e2e8f0; }
-.chart-drawing-offcanvas-header > div { display: flex; align-items: center; gap: 16px; }
-.chart-drawing-offcanvas-icon { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; color: #fff; background: linear-gradient(135deg, #2563eb, #7c3aed); border-radius: 13px; font-size: 1.35rem; }
-.chart-drawing-offcanvas h2 { margin: 0; color: #0f172a; font-size: clamp(1.25rem, 2.2vw, 1.75rem); }
-.chart-drawing-offcanvas-header p { margin: 5px 0 0; color: #64748b; font-size: clamp(.82rem, 1.25vw, 1rem); }
-.chart-drawing-offcanvas-close { width: 42px; height: 42px; flex: 0 0 auto; color: #64748b; border-radius: 10px; font-size: 1.2rem; }
+.chart-drawing-offcanvas-header { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 10px clamp(16px, 2vw, 28px); border-bottom: 1px solid #e2e8f0; }
+.chart-drawing-offcanvas-header > div { display: flex; min-width: 0; align-items: center; gap: 10px; }
+.chart-drawing-offcanvas-header > div > div { display: flex; min-width: 0; align-items: baseline; gap: 10px; }
+.chart-drawing-offcanvas-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex: 0 0 auto; color: #fff; background: linear-gradient(135deg, #2563eb, #7c3aed); border-radius: 9px; font-size: 1rem; }
+.chart-drawing-offcanvas h2 { flex: 0 0 auto; margin: 0; color: #0f172a; font-size: 1.12rem; }
+.chart-drawing-offcanvas-header p { overflow: hidden; margin: 0; color: #64748b; font-size: .76rem; text-overflow: ellipsis; white-space: nowrap; }
+.chart-drawing-offcanvas-close { width: 34px; height: 34px; flex: 0 0 auto; color: #64748b; border-radius: 8px; font-size: 1rem; }
 .chart-drawing-offcanvas-close:hover { color: #0f172a; background: #f1f5f9; }
-.chart-drawing-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 12px clamp(20px, 3vw, 42px); color: #475569; background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-size: .8rem; }
-.chart-drawing-toolbar span i { margin-right: 5px; color: #2563eb; }
-.chart-drawing-toolbar button { padding: 7px 10px; color: #1d4ed8; background: #fff; border: 1px solid #bfdbfe; border-radius: 7px; font-size: .74rem; font-weight: 800; }
-.chart-drawing-toolbar button:hover { color: #fff; background: #2563eb; }
+.chart-drawing-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }.chart-drawing-stats > div { display: grid; gap: 2px; padding: 8px 9px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; text-align: center; }.chart-drawing-stats span { color: #94a3b8; font-size: .64rem; font-weight: 700; }.chart-drawing-stats span i { margin-right: 3px; color: #2563eb; }.chart-drawing-stats strong { color: #1e293b; font-size: .92rem; font-variant-numeric: tabular-nums; }.chart-drawing-stats small { min-height: 1.2em; color: #64748b; font: 600 .58rem/1.25 ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric: tabular-nums; }.chart-drawing-stats > div.has-outliers { background: #fefce8; border-color: #eab308; }.chart-drawing-stats > div.has-outliers strong { color: #b45309; }.chart-drawing-stats > div.has-outliers span i { color: #ca8a04; }
 .chart-drawing-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(230px, .78fr); gap: 18px; padding: clamp(18px, 2.4vw, 36px) clamp(20px, 3vw, 42px); }
 .chart-drawing-panel { min-width: 0; overflow: hidden; border: 1px solid #dbe3ee; border-radius: 13px; background: #fff; }
 .chart-drawing-panel > header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 13px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
@@ -803,16 +801,28 @@ body.modal-open { overflow: hidden; }
 .chart-drawing-insight.is-up { background: #fff1f2; border-color: #ef476f; }
 .chart-drawing-insight.is-down { background: #eff6ff; border-color: #3b82f6; }
 .chart-drawing-insight.is-flat { background: #fffbeb; border-color: #f59e0b; }
-.chart-drawing-similar { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid #dbeafe; border-radius: 13px; background: #fff; }
-.chart-drawing-similar > header { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 13px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
-.chart-drawing-similar > header b { color: #1e3a8a; font-size: .86rem; }.chart-drawing-similar > header b i { margin-right: 5px; color: #2563eb; }
-.chart-drawing-similar > header small { color: #64748b; font-size: .68rem; }
-.chart-drawing-similar-body { flex: 1; padding: 13px 15px; overflow-y: auto; }
-.chart-drawing-similar-body > p { margin: 0 0 10px; color: #475569; font-size: .74rem; line-height: 1.45; }
-.chart-drawing-similar-cards { display: grid; gap: 8px; }
-.chart-drawing-similar-cards article { display: grid; gap: 4px; padding: 10px 11px; background: #fff; border: 1px solid #bfdbfe; border-left: 3px solid #3b82f6; border-radius: 8px; }
-.chart-drawing-similar-cards span { color: #2563eb; font-size: .67rem; font-weight: 800; }.chart-drawing-similar-cards strong { color: #1e293b; font-size: .82rem; }
-.chart-drawing-similar-cards small { color: #64748b; font-size: .67rem; }.chart-drawing-similar-cards em { color: #1d4ed8; font-size: .68rem; font-style: normal; font-weight: 800; }
+.chart-drawing-similar { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid #dbeafe; border-radius: 13px; background: #fff; }.chart-drawing-similar > header { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 13px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }.chart-drawing-similar > header b { color: #1e3a8a; font-size: .86rem; }.chart-drawing-similar > header b i { margin-right: 5px; color: #2563eb; }.chart-drawing-similar > header small { color: #64748b; font-size: .68rem; }.chart-drawing-similar-body { flex: 1; padding: 13px 15px; overflow-y: auto; }.chart-drawing-similar-body > p { margin: 0 0 10px; color: #475569; font-size: .74rem; line-height: 1.45; }.chart-drawing-similar-cards { display: grid; gap: 8px; }.chart-drawing-similar-cards article { display: grid; gap: 4px; padding: 10px 11px; background: #fff; border: 1px solid #bfdbfe; border-left: 3px solid #3b82f6; border-radius: 8px; }.chart-drawing-similar-cards span { color: #2563eb; font-size: .67rem; font-weight: 800; }.chart-drawing-similar-cards strong { color: #1e293b; font-size: .82rem; }.chart-drawing-similar-cards small { color: #64748b; font-size: .67rem; }.chart-drawing-similar-cards em { color: #1d4ed8; font-size: .68rem; font-style: normal; font-weight: 800; }
+.chart-drawing-candle-popup { position: fixed; z-index: 1210; inset: 0; display: grid; place-items: center; padding: 18px; background: rgba(15,23,42,.52); }
+.chart-drawing-candle-popup[hidden] { display: none; }
+.chart-drawing-candle-popup section { width: min(460px, 100%); overflow: hidden; color: #334155; background: #fff; border: 1px solid #cbd5e1; border-radius: 14px; box-shadow: 0 20px 60px rgba(15,23,42,.32); }
+.chart-drawing-candle-popup header { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 17px 18px; border-bottom: 1px solid #e2e8f0; }
+.chart-drawing-candle-popup header > div { display: flex; align-items: center; gap: 10px; }
+.chart-drawing-candle-popup header span { display: inline-grid; width: 34px; height: 34px; place-items: center; color: #fff; background: #ef476f; border-radius: 9px; }
+.chart-drawing-candle-popup h3 { margin: 0; color: #0f172a; font-size: .98rem; }
+.chart-drawing-candle-popup header p { margin: 3px 0 0; color: #64748b; font-size: .72rem; }
+.chart-drawing-candle-popup button { width: 34px; height: 34px; color: #64748b; border-radius: 8px; font-size: 1rem; }
+.chart-drawing-candle-popup button:hover { color: #0f172a; background: #f1f5f9; }
+.chart-drawing-candle-popup section > div { padding: 16px 18px 18px; }
+.chart-drawing-candle-values { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+.chart-drawing-candle-values > div { display: grid; gap: 3px; padding: 8px 5px; text-align: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; }
+.chart-drawing-candle-values span { color: #64748b; font-size: .63rem; font-weight: 700; }
+.chart-drawing-candle-values strong { color: #1e293b; font-size: .78rem; font-variant-numeric: tabular-nums; }
+.chart-drawing-candle-formula { display: grid; gap: 7px; margin-top: 13px; }
+.chart-drawing-candle-formula p { display: flex; justify-content: space-between; gap: 10px; margin: 0; padding: 8px 10px; color: #475569; background: #f8fafc; border-radius: 7px; font-size: .71rem; line-height: 1.35; }
+.chart-drawing-candle-formula b { flex: 0 0 auto; color: #334155; }
+.chart-drawing-candle-formula code { color: #1d4ed8; font: 700 .68rem/1.35 ui-monospace, SFMono-Regular, Menlo, monospace; text-align: right; }
+.chart-drawing-candle-formula p.is-warning { color: #92400e; background: #fef3c7; }.chart-drawing-candle-formula p.is-warning b, .chart-drawing-candle-formula p.is-warning code { color: #92400e; }
+.chart-drawing-candle-formula p.is-normal { color: #475569; background: #f1f5f9; }
 .chart-drawing-note { margin: 0 clamp(20px, 3vw, 42px) 24px; padding: 10px 12px; color: #64748b; background: #f8fafc; border-radius: 8px; font-size: .74rem; line-height: 1.5; }
 .chart-drawing-note i { margin-right: 5px; color: #2563eb; }
 .rsi-macd-simulator-button { display: inline-flex; align-items: center; gap: 7px; margin: 4px 0; padding: 10px 14px; color: #7c3aed; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 9px; font-size: .82rem; font-weight: 800; box-shadow: 0 2px 5px rgba(124,58,237,.08); }
@@ -1162,10 +1172,12 @@ body.modal-open { overflow: hidden; }
   .macro-news-modal-header { padding: 15px; }
   .macro-news-canvas-wrap { padding-inline: 12px; }
   .macro-news-insight, .macro-news-disclaimer { margin-inline: 12px; }
-  .chart-drawing-offcanvas-header { padding: 15px; }
-  .chart-drawing-offcanvas-header > div { gap: 10px; }
-  .chart-drawing-offcanvas-icon { width: 40px; height: 40px; }
-  .chart-drawing-toolbar { align-items: flex-start; flex-direction: column; padding: 12px 15px; }
+  .chart-drawing-offcanvas-header { padding: 8px 12px; }
+  .chart-drawing-offcanvas-header > div { gap: 7px; }
+  .chart-drawing-offcanvas-header > div > div { gap: 7px; }
+  .chart-drawing-offcanvas-icon { width: 30px; height: 30px; font-size: .85rem; }
+  .chart-drawing-offcanvas h2 { font-size: 1rem; }
+  .chart-drawing-offcanvas-header p { font-size: .66rem; }
   .chart-drawing-split { grid-template-columns: 1fr; padding: 12px; }
   .chart-drawing-panel > header { align-items: flex-start; flex-direction: column; gap: 4px; }
   .chart-drawing-note { margin: 0 12px 16px; }

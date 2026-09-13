@@ -67,7 +67,7 @@ export function portfolioRegimeView(container) {
     <section class="regime-page">
       <div class="page-heading"><h1><i class="fa-solid fa-chart-diagram"></i> IBKS 자산배분 정량 모델 (K-클러스터링) · 위험선호도</h1><p>K-클러스터링으로 나눈 경제 국면(Regime)에 따라 R1~R5 위험선호도가 포트폴리오의 기본 뼈대를 결정합니다.</p></div>
 
-      <aside class="regime-explainer"><i class="fa-solid fa-circle-info"></i><div><strong>R1~R5는 시장 국면에 대응하는 기준선입니다</strong><p>각 단계는 자산군별 위험 대비 수익률과 변동성 흐름에 따라 서로 다른 자산배분 전략을 제시하는 학습용 프레임워크입니다. 실제 투자 조언이나 수익 보장이 아닙니다.</p></div></aside>
+      <aside class="regime-explainer"><i class="fa-solid fa-circle-info"></i><div><strong>R1~R5는 시장 국면에 대응하는 기준선입니다</strong><p>IBKS의 'IBK'는 Industrial Bank of Korea(중소기업은행)의 약자로, IBK투자증권 리서치센터의 자산배분 전략 자료를 가리킵니다. 각 단계는 자산군별 위험 대비 수익률과 변동성 흐름에 따라 서로 다른 자산배분 전략을 제시하는 학습용 프레임워크입니다. 실제 투자 조언이나 수익 보장이 아닙니다.</p></div></aside>
 
       <div class="regime-cards">${renderRegimeCards()}</div>
 

@@ -22,9 +22,11 @@ function orderSidebarSections() {
     if (section) nav.append(section);
   });
 
-  // RAG는 보조 기능이므로 모든 학습·분석 메뉴 다음, 메뉴의 마지막에 둔다.
-  const rag = nav.querySelector(':scope > .nav-item[data-view="rag-chat"]');
-  if (rag) nav.append(rag);
+  // RAG는 보조 기능이므로 모든 학습·분석 메뉴 다음에 두고, LLM 서빙 비교는 그 아래 맨 마지막에 둔다.
+  ['rag-chat', 'llm-bench'].forEach((view) => {
+    const item = nav.querySelector(`:scope > .nav-item[data-view="${view}"]`);
+    if (item) nav.append(item);
+  });
 }
 window._orderSidebarSections = orderSidebarSections;
 

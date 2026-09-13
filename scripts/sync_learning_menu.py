@@ -39,13 +39,17 @@ def title_for(path: Path) -> str:
     return path.stem
 
 
+HOT_DOCS = {"05"}
+
+
 def menu_html(docs: list[dict[str, str]]) -> str:
     rows = []
     for doc in docs:
         icon = "fa-spell-check" if doc["id"] == "voca" else "fa-circle-dot"
+        badge = '<span class="nav-badge-hot">HOT</span>' if doc["id"] in HOT_DOCS else ""
         rows.append(
             f'            <a class="nav-item" data-view="learn-{html.escape(doc["id"])}">'
-            f'<i class="fa-solid {icon}"></i>{html.escape(doc["label"])}</a>'
+            f'<i class="fa-solid {icon}"></i>{html.escape(doc["label"])}{badge}</a>'
         )
     return "\n".join(rows)
 

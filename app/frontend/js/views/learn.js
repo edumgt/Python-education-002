@@ -49,9 +49,9 @@ const VOCABULARY_WORD_MEANINGS = {
   capital: '자본', cash: '현금', convergence: '수렴', data: '자료', dividend: '배당',
   earnings: '이익', exchange: '거래소', expense: '비용', flow: '흐름', fund: '펀드',
   gross: '총', guidance: '전망', income: '소득·이익', index: '지수', initial: '최초의',
-  intelligence: '지능', interest: '이자', loss: '손실', market: '시장', money: '통화',
+  intelligence: '지능', interest: '이자', liquidity: '유동성', loss: '손실', market: '시장', money: '통화',
   net: '순', operating: '영업의', per: '…당', price: '가격', processing: '처리',
-  product: '생산물', ratio: '비율', return: '수익률', security: '증권', share: '주식·지분',
+  product: '생산물', provider: '공급자', ratio: '비율', return: '수익률', security: '증권', share: '주식·지분',
   social: '사회의', strength: '강도', system: '체계', total: '전체', traded: '거래되는',
   trading: '거래', value: '가치', year: '연도', yield: '수익률', to: '대', of: '의',
 };
@@ -1154,17 +1154,25 @@ function installRsiMacdSimulator(root, docId) {
   modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-labelledby', 'rsi-macd-modal-title');
   modal.innerHTML = `
     <section class="rsi-macd-modal">
-      <header class="rsi-macd-modal-header"><div><span class="rsi-macd-modal-icon"><i class="fa-solid fa-wave-square"></i></span><div><h2 id="rsi-macd-modal-title">RSI·MACD 흐름 시뮬레이터</h2><p>추세와 흔들림을 바꾸면 최근 30일 가상 종가에서 두 보조지표가 어떻게 달라지는지 확인합니다.</p></div></div><button type="button" class="rsi-macd-modal-close" aria-label="RSI MACD 시뮬레이터 닫기"><i class="fa-solid fa-xmark"></i></button></header>
+      <header class="rsi-macd-modal-header"><div><span class="rsi-macd-modal-icon"><i class="fa-solid fa-wave-square"></i></span><div><h2 id="rsi-macd-modal-title">RSI·MACD 흐름 시뮬레이터</h2><p>슬라이더 2개만 움직여 보세요. 가격 흐름이 바뀌면 RSI·MACD가 어떻게 따라 바뀌는지 바로 보입니다.</p></div></div><button type="button" class="rsi-macd-modal-close" aria-label="RSI MACD 시뮬레이터 닫기"><i class="fa-solid fa-xmark"></i></button></header>
       <div class="rsi-macd-simulator">
-        <section class="rsi-macd-terms"><p><b>RSI</b>(Relative Strength Index, 상대강도지수) — 최근 일정 기간의 평균 상승폭과 평균 하락폭을 비교해 0~100 사이 숫자로 나타낸 지표입니다. 가격이 얼마나 빠르게 올랐거나 내렸는지를 보여 줍니다.</p><p><b>MACD</b>(Moving Average Convergence Divergence, 이동평균 수렴·확산 지표) — 단기 이동평균(12일 EMA)에서 장기 이동평균(26일 EMA)을 뺀 값으로, 두 평균이 서로 멀어지거나(발산) 가까워지는(수렴) 흐름을 보며 추세 변화를 살펴보는 지표입니다. 시그널선은 MACD의 9일 이동평균입니다.</p></section>
-        <section class="rsi-macd-inputs"><div class="rsi-macd-section-heading"><span>STEP 1</span><h3>가격 흐름을 만들어 보세요</h3><p>하루 평균 변화율: %</p></div><div class="rsi-macd-input-grid">
-          <label>시작 가격<input type="number" data-rsi-macd-input="price" value="50000" min="100" step="1000"></label>
-          <label>하루 평균 변화율<input type="range" data-rsi-macd-input="trend" value="0.6" min="-3" max="3" step="0.1"><output data-rsi-macd-output="trend"></output></label>
-          <label>하루 흔들림<input type="range" data-rsi-macd-input="volatility" value="0.8" min="0" max="3" step="0.1"><output data-rsi-macd-output="volatility"></output></label>
+        <section class="rsi-macd-inputs"><div class="rsi-macd-input-grid">
+          <label>가격 방향(추세)<input type="range" data-rsi-macd-input="trend" value="0.6" min="-3" max="3" step="0.1"><output data-rsi-macd-output="trend"></output></label>
+          <label>흔들림(변동성)<input type="range" data-rsi-macd-input="volatility" value="0.8" min="0" max="3" step="0.1"><output data-rsi-macd-output="volatility"></output></label>
         </div></section>
         <section class="rsi-macd-chart-wrap"><canvas data-rsi-macd-chart aria-label="가상 가격과 MACD 흐름 차트"></canvas></section>
-        <section class="rsi-macd-results" aria-live="polite"><article><span>마지막 종가</span><strong data-rsi-macd-output="close"></strong><small>30일 가상 흐름의 마지막 값</small></article><article><span>RSI(14)</span><strong data-rsi-macd-output="rsi"></strong><small>최근 14일 평균 상승폭 ÷ 하락폭</small></article><article><span>MACD</span><strong data-rsi-macd-output="macd"></strong><small>12일 EMA − 26일 EMA</small></article><article><span>시그널과의 차이</span><strong data-rsi-macd-output="histogram"></strong><small>MACD − 9일 시그널선</small></article></section>
-        <section class="rsi-macd-reading"><div class="rsi-macd-section-heading"><span>STEP 2</span><h3>보조지표를 읽는 방법</h3><p>단독 매매 신호가 아닙니다</p></div><p data-rsi-macd-reading></p><ol><li><b>RSI</b><span data-rsi-macd-formula="rsi"></span></li><li><b>MACD</b><span data-rsi-macd-formula="macd"></span></li></ol></section>
+        <section class="rsi-macd-guide" aria-label="차트 읽는 법">
+          <p><i style="background:#2563eb"></i><b>파란 선 = 가상 종가</b> — 슬라이더로 만든 30일 동안의 가격 흐름이에요. 위 칸이 가격, 아래 칸이 MACD예요.</p>
+          <p><i style="background:#7c3aed"></i><b>보라 선 = MACD</b> — 최근 12일 평균 가격에서 26일 평균 가격을 뺀 값이에요. 0보다 위면 최근 가격이 예전 평균보다 높은 쪽, 즉 오르는 힘이 우세하다는 뜻이에요.</p>
+          <p><i style="background:#f59e0b"></i><b>주황 선 = 시그널</b> — MACD를 다시 9일 동안 평균 낸 ‘느린 선’이에요. MACD가 잠깐 튄 것인지, 방향이 정말 바뀌는지 가늠하는 기준선이에요.</p>
+          <p><b>읽는 법</b> — 보라 선이 주황 선을 아래에서 위로 넘으면 오르는 힘이 강해지는 신호, 위에서 아래로 내려가면 약해지는 신호로 참고해요. 어디까지나 참고 신호이지 매수·매도 결정은 아니에요.</p>
+        </section>
+        <section class="rsi-macd-results" aria-live="polite">
+          <article><span>RSI</span><strong data-rsi-macd-output="rsi"></strong><small data-rsi-macd-badge></small></article>
+          <article><span>MACD</span><strong data-rsi-macd-output="histogram"></strong><small data-rsi-macd-macd-badge></small></article>
+        </section>
+        <p class="rsi-macd-plain" data-rsi-macd-reading></p>
+        <details class="rsi-macd-detail"><summary>계산 과정 자세히 보기</summary><ol><li><b>RSI</b><span data-rsi-macd-formula="rsi"></span></li><li><b>MACD</b><span data-rsi-macd-formula="macd"></span></li></ol></details>
         <footer class="rsi-macd-note"><i class="fa-solid fa-circle-info"></i> RSI 70 이상·30 이하, MACD의 교차는 관찰 기준일 뿐입니다. 강한 추세에서는 오래 유지될 수 있으므로 가격·거래량·공시를 함께 확인하세요.<button type="button" data-rsi-macd-reset>예시값으로 초기화</button></footer>
       </div>
     </section>`;
@@ -1183,14 +1191,18 @@ function installRsiMacdSimulator(root, docId) {
   };
   const update = () => {
     const value = (name) => Number(modal.querySelector(`[data-rsi-macd-input="${name}"]`).value) || 0;
-    const price = value('price'); const trend = value('trend'); const volatility = value('volatility');
-    const prices = [price]; for (let index = 1; index < 31; index += 1) { const wave = Math.sin(index * 1.71) * volatility + Math.cos(index * .63) * volatility * .45; prices.push(Math.max(1, prices.at(-1) * (1 + (trend + wave) / 100))); }
+    const trend = value('trend'); const volatility = value('volatility');
+    const prices = [50000]; for (let index = 1; index < 31; index += 1) { const wave = Math.sin(index * 1.71) * volatility + Math.cos(index * .63) * volatility * .45; prices.push(Math.max(1, prices.at(-1) * (1 + (trend + wave) / 100))); }
     const changes = prices.slice(1).map((current, index) => current - prices[index]); const recent = changes.slice(-14); const averageGain = recent.filter((change) => change > 0).reduce((sum, change) => sum + change, 0) / 14; const averageLoss = Math.abs(recent.filter((change) => change < 0).reduce((sum, change) => sum + change, 0)) / 14;
     const rsi = averageLoss === 0 ? 100 : 100 - 100 / (1 + averageGain / averageLoss); const fast = ema(prices, 12); const slow = ema(prices, 26); const macdValues = prices.map((_, index) => fast[index] - slow[index]); const signalValues = ema(macdValues, 9); const macd = macdValues.at(-1); const signal = signalValues.at(-1); const histogram = macd - signal;
     modal.querySelector('[data-rsi-macd-output="trend"]').value = `${trend >= 0 ? '+' : ''}${format(trend)}%`; modal.querySelector('[data-rsi-macd-output="volatility"]').value = `${format(volatility)}%`;
-    modal.querySelector('[data-rsi-macd-output="close"]').textContent = `${format(prices.at(-1), 0)}원`; modal.querySelector('[data-rsi-macd-output="rsi"]').textContent = format(rsi, 1); modal.querySelector('[data-rsi-macd-output="macd"]').textContent = format(macd, 0); modal.querySelector('[data-rsi-macd-output="histogram"]').textContent = `${histogram >= 0 ? '+' : ''}${format(histogram, 0)}`;
-    const rsiReading = rsi >= 70 ? '최근 상승폭이 커 RSI가 높은 구간입니다. 과열을 확정하는 숫자는 아니며, 강한 상승 추세에서는 높은 RSI가 이어질 수 있습니다.' : rsi <= 30 ? '최근 하락폭이 커 RSI가 낮은 구간입니다. 반등을 보장하지 않으므로 지지 구간과 거래량을 함께 봅니다.' : 'RSI가 중간 범위입니다. 최근 상승·하락의 속도는 보이지만, 방향 판단에는 가격 추세와 거래량이 더 필요합니다.';
-    modal.querySelector('[data-rsi-macd-reading]').textContent = `${rsiReading} MACD가 시그널선보다 ${histogram >= 0 ? '위' : '아래'}에 있어 단기 평균과 장기 평균의 차이가 ${histogram >= 0 ? '확대' : '축소'}되는 모습입니다.`;
+    modal.querySelector('[data-rsi-macd-output="rsi"]').textContent = format(rsi, 0);
+    modal.querySelector('[data-rsi-macd-output="histogram"]').textContent = histogram >= 0 ? '상승 강화' : '하락 강화';
+    const rsiBadge = rsi >= 70 ? '과열 구간' : rsi <= 30 ? '침체 구간' : '중립 구간';
+    modal.querySelector('[data-rsi-macd-badge]').textContent = rsiBadge;
+    modal.querySelector('[data-rsi-macd-macd-badge]').textContent = histogram >= 0 ? '단기선이 위' : '단기선이 아래';
+    const rsiReading = rsi >= 70 ? '최근 상승폭이 커 RSI가 높은 구간입니다. 과열을 확정하는 숫자는 아니며, 강한 상승 추세에서는 높은 RSI가 이어질 수 있습니다.' : rsi <= 30 ? '최근 하락폭이 커 RSI가 낮은 구간입니다. 반등을 보장하지 않으므로 지지 구간과 거래량을 함께 봅니다.' : 'RSI가 중간 범위라 상승·하락 속도만으로는 방향을 판단하기 어렵습니다.';
+    modal.querySelector('[data-rsi-macd-reading]').textContent = `${rsiReading} MACD는 ${histogram >= 0 ? '단기 평균이 장기 평균보다 위에서 더 벌어지는 중' : '단기 평균이 장기 평균보다 아래에서 더 벌어지는 중'}입니다.`;
     modal.querySelector('[data-rsi-macd-formula="rsi"]').textContent = `최근 14일 평균 상승폭 ${format(averageGain, 0)}원, 평균 하락폭 ${format(averageLoss, 0)}원 → RSI ${format(rsi, 1)}`;
     modal.querySelector('[data-rsi-macd-formula="macd"]').textContent = `12일 EMA ${format(fast.at(-1), 0)}원 − 26일 EMA ${format(slow.at(-1), 0)}원 = ${format(macd, 0)} · 시그널 ${format(signal, 0)}`;
     draw(prices, macdValues, signalValues);
@@ -1204,6 +1216,222 @@ function installRsiMacdSimulator(root, docId) {
   window._viewCleanup = () => { previousCleanup?.(); window.removeEventListener('resize', update); document.removeEventListener('keydown', onKeydown); modal.remove(); };
 }
 
+function installMaCrossSimulator(root, docId) {
+  const trigger = root.querySelector('[data-ma-cross-simulator]');
+  if (docId !== '05' || !trigger) return;
+  const PERIODS = [5, 20, 60, 120];
+  const COLORS = { 5: '#ef4444', 20: '#2563eb', 60: '#16a34a', 120: '#7c3aed' };
+  const modal = document.createElement('div');
+  modal.className = 'ma-cross-modal-backdrop';
+  modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-labelledby', 'ma-cross-modal-title');
+  modal.innerHTML = `
+    <section class="ma-cross-modal">
+      <header class="ma-cross-modal-header">
+        <div><span class="ma-cross-modal-icon"><i class="fa-solid fa-timeline"></i></span><div><h2 id="ma-cross-modal-title">이동평균 크로스 드로잉 시뮬레이터</h2><p>왼쪽에 가격 흐름을 직접 그리면 SMA·EMA(5·20·60·120)와 골든·데드크로스 구간을 확인합니다.</p></div></div>
+        <button type="button" class="ma-cross-modal-close" aria-label="이동평균 크로스 시뮬레이터 닫기"><i class="fa-solid fa-xmark"></i></button>
+      </header>
+      <div class="ma-cross-toolbar"><span><i class="fa-solid fa-hand-pointer"></i> 왼쪽 영역을 길게 드래그해 가격선을 그려 보세요. (짧게 그리면 60·120일선은 계산되지 않습니다)</span><button type="button" data-ma-cross-clear><i class="fa-solid fa-eraser"></i> 지우기</button></div>
+      <div class="ma-cross-legend">
+        ${PERIODS.map((p) => `<span><i style="background:${COLORS[p]}"></i>SMA${p} 실선</span>`).join('')}
+        <span><i style="background:#0f172a;border-radius:2px"></i>EMA 점선(동일 색상)</span>
+        <span><i style="background:#f59e0b"></i>골든크로스</span>
+        <span><i style="background:#1e293b"></i>데드크로스</span>
+      </div>
+      <div class="ma-cross-split">
+        <section class="ma-cross-panel"><header><b>1. 내가 그린 가격 흐름</b><small>왼쪽 → 오른쪽은 시간, 위 → 아래는 가격</small></header><div class="ma-cross-canvas-wrap"><canvas data-ma-cross-input aria-label="가격 흐름을 직접 그리는 캔버스"></canvas></div></section>
+        <section class="ma-cross-panel"><header><b>2. SMA·EMA와 크로스 구간</b><small>실선 SMA · 점선 EMA · 점은 크로스 발생 지점</small></header><div class="ma-cross-canvas-wrap"><canvas data-ma-cross-output aria-label="이동평균선과 크로스를 나타낸 캔버스"></canvas></div></section>
+        <section class="ma-cross-stats" aria-live="polite"><header><b><i class="fa-solid fa-chart-simple"></i> 3. 이동평균별 평균·표준편차</b><small>그려진 구간 전체 기준</small></header><div class="ma-cross-stats-body" data-ma-cross-stats><p class="ma-cross-empty">선을 그리면 이동평균과 통계가 표시됩니다.</p></div></section>
+      </div>
+      <p class="ma-cross-note"><i class="fa-solid fa-circle-info"></i> SMA·EMA와 골든·데드크로스는 과거 가격을 정리해 보여 주는 참고 지표일 뿐, 매수·매도를 확정하거나 미래 가격을 보장하지 않습니다.</p>
+    </section>`;
+  document.body.appendChild(modal);
+
+  const inputCanvas = modal.querySelector('[data-ma-cross-input]');
+  const outputCanvas = modal.querySelector('[data-ma-cross-output]');
+  const statsBody = modal.querySelector('[data-ma-cross-stats]');
+  const closeButton = modal.querySelector('.ma-cross-modal-close');
+  let points = [];
+  let drawing = false;
+  let lastFocused = null;
+
+  const sizeCanvas = (canvas) => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.max(280, canvas.parentElement.clientWidth - 2);
+    const height = Math.max(280, Math.min(560, window.innerHeight * .5));
+    canvas.width = width * dpr; canvas.height = height * dpr;
+    canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
+    const ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, width, height };
+  };
+  const grid = (ctx, width, height, label) => {
+    ctx.fillStyle = '#fbfdff'; ctx.fillRect(0, 0, width, height);
+    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+    for (let x = 38; x < width; x += (width - 54) / 6) { ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, height - 30); ctx.stroke(); }
+    for (let y = 28; y < height - 20; y += (height - 58) / 5) { ctx.beginPath(); ctx.moveTo(38, y); ctx.lineTo(width - 16, y); ctx.stroke(); }
+    ctx.fillStyle = '#94a3b8'; ctx.font = '600 11px Pretendard, sans-serif'; ctx.fillText(label, 12, 17);
+  };
+  const drawInput = () => {
+    const { ctx, width, height } = sizeCanvas(inputCanvas); grid(ctx, width, height, '가격');
+    if (!points.length) {
+      ctx.fillStyle = '#64748b'; ctx.font = '700 15px Pretendard, sans-serif'; ctx.textAlign = 'center'; ctx.fillText('이 영역에 가격선을 그려 보세요', width / 2, height / 2 - 6);
+      ctx.font = '500 12px Pretendard, sans-serif'; ctx.fillText('길게 그릴수록 장기 이동평균선까지 확인할 수 있어요', width / 2, height / 2 + 20); ctx.textAlign = 'start'; return;
+    }
+    ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.beginPath();
+    points.forEach((point, index) => { const x = 38 + point.x * (width - 54); const y = 20 + point.y * (height - 50); index ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.stroke();
+  };
+  const sma = (values, period) => values.map((_, index) => index < period - 1 ? null : values.slice(index - period + 1, index + 1).reduce((a, b) => a + b, 0) / period);
+  const ema = (values, period) => {
+    const k = 2 / (period + 1); let prev = null;
+    return values.map((value, index) => {
+      if (index < period - 1) return null;
+      if (prev === null) { prev = values.slice(index - period + 1, index + 1).reduce((a, b) => a + b, 0) / period; return prev; }
+      prev = value * k + prev * (1 - k); return prev;
+    });
+  };
+  const meanStd = (arr) => {
+    const valid = arr.filter((v) => v !== null);
+    if (!valid.length) return { mean: null, std: null };
+    const mean = valid.reduce((a, b) => a + b, 0) / valid.length;
+    const std = Math.sqrt(valid.reduce((sum, v) => sum + (v - mean) ** 2, 0) / valid.length);
+    return { mean, std };
+  };
+  const findCrosses = (shortArr, longArr) => {
+    const crosses = [];
+    for (let index = 1; index < shortArr.length; index += 1) {
+      const s0 = shortArr[index - 1]; const s1 = shortArr[index]; const l0 = longArr[index - 1]; const l1 = longArr[index];
+      if (s0 == null || s1 == null || l0 == null || l1 == null) continue;
+      const prevDiff = s0 - l0; const currDiff = s1 - l1;
+      if (prevDiff <= 0 && currDiff > 0) crosses.push({ index, type: 'golden' });
+      else if (prevDiff >= 0 && currDiff < 0) crosses.push({ index, type: 'dead' });
+    }
+    return crosses;
+  };
+  const drawOutput = () => {
+    const { ctx, width, height } = sizeCanvas(outputCanvas); grid(ctx, width, height, '주가');
+    if (points.length < 2) { statsBody.innerHTML = '<p class="ma-cross-empty">선을 그리면 이동평균과 통계가 표시됩니다.</p>'; return; }
+    const sampleCount = Math.max(40, Math.min(160, points.length));
+    const sorted = [...points].sort((a, b) => a.x - b.x);
+    const closes = Array.from({ length: sampleCount }, (_, index) => {
+      const x = index / (sampleCount - 1);
+      const rightIndex = sorted.findIndex((point) => point.x >= x);
+      let value;
+      if (rightIndex < 0) value = sorted.at(-1).y;
+      else if (rightIndex === 0) value = sorted[0].y;
+      else { const left = sorted[rightIndex - 1]; const right = sorted[rightIndex]; const ratio = (x - left.x) / Math.max(.0001, right.x - left.x); value = left.y + (right.y - left.y) * ratio; }
+      return 60 + (1 - value) * 80;
+    });
+    const smaLines = {}; const emaLines = {};
+    PERIODS.forEach((period) => { smaLines[period] = sma(closes, period); emaLines[period] = ema(closes, period); });
+    const allValues = [closes, ...Object.values(smaLines), ...Object.values(emaLines)].flat().filter((v) => v != null);
+    const min = Math.min(...allValues) - 6; const max = Math.max(...allValues) + 6;
+    const chartWidth = width - 58; const chartHeight = height - 54;
+    const xFor = (index) => 42 + index * chartWidth / (sampleCount - 1);
+    const yFor = (value) => 20 + (max - value) / (max - min) * chartHeight;
+
+    ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5; ctx.beginPath();
+    closes.forEach((value, index) => { const x = xFor(index); const y = yFor(value); index ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.stroke();
+
+    const drawLine = (arr, color, dashed) => {
+      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.setLineDash(dashed ? [5, 3] : []);
+      ctx.beginPath(); let started = false;
+      arr.forEach((value, index) => { if (value == null) return; const x = xFor(index); const y = yFor(value); if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y); });
+      ctx.stroke(); ctx.setLineDash([]);
+    };
+    PERIODS.forEach((period) => drawLine(smaLines[period], COLORS[period], false));
+    PERIODS.forEach((period) => drawLine(emaLines[period], COLORS[period], true));
+
+    const pairs = [[5, 20], [20, 60], [60, 120]];
+    const markCrosses = (shortArr, longArr) => {
+      findCrosses(shortArr, longArr).forEach(({ index, type }) => {
+        const x = xFor(index); const y = yFor(shortArr[index]);
+        ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = type === 'golden' ? '#f59e0b' : '#1e293b'; ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+      });
+    };
+    pairs.forEach(([shortPeriod, longPeriod]) => { markCrosses(smaLines[shortPeriod], smaLines[longPeriod]); markCrosses(emaLines[shortPeriod], emaLines[longPeriod]); });
+
+    const rows = [
+      ...PERIODS.map((period) => ({ label: `SMA${period}`, color: COLORS[period], ...meanStd(smaLines[period]) })),
+      ...PERIODS.map((period) => ({ label: `EMA${period}`, color: COLORS[period], ...meanStd(emaLines[period]) })),
+    ];
+    statsBody.innerHTML = rows.map((row) => `<div class="ma-cross-stat-row"><span class="ma-cross-stat-dot" style="background:${row.color}"></span><b>${row.label}</b><span>평균 ${row.mean != null ? row.mean.toFixed(1) : '-'}</span><span>표준편차 ${row.std != null ? row.std.toFixed(1) : '-'}</span></div>`).join('');
+  };
+  const redraw = () => { drawInput(); drawOutput(); };
+  const pointFromEvent = (event) => {
+    const rect = inputCanvas.getBoundingClientRect();
+    return { x: Math.max(0, Math.min(1, (event.clientX - rect.left - 38) / Math.max(1, rect.width - 54))), y: Math.max(0, Math.min(1, (event.clientY - rect.top - 20) / Math.max(1, rect.height - 50))) };
+  };
+  inputCanvas.addEventListener('pointerdown', (event) => { drawing = true; points = [pointFromEvent(event)]; inputCanvas.setPointerCapture(event.pointerId); redraw(); });
+  inputCanvas.addEventListener('pointermove', (event) => { if (!drawing) return; const point = pointFromEvent(event); const previous = points.at(-1); if (!previous || point.x - previous.x > .002) { points.push(point); redraw(); } });
+  inputCanvas.addEventListener('pointerup', () => { drawing = false; redraw(); });
+  modal.querySelector('[data-ma-cross-clear]').addEventListener('click', () => { points = []; redraw(); });
+  const closeModal = () => { modal.classList.remove('show'); document.body.classList.remove('modal-open'); lastFocused?.focus(); };
+  const onKeydown = (event) => { if (event.key === 'Escape' && modal.classList.contains('show')) closeModal(); };
+  trigger.addEventListener('click', (event) => { event.preventDefault(); lastFocused = trigger; modal.classList.add('show'); document.body.classList.add('modal-open'); redraw(); closeButton.focus(); });
+  closeButton.addEventListener('click', closeModal);
+  modal.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });
+  const handleResize = () => { if (modal.classList.contains('show')) redraw(); };
+  window.addEventListener('resize', handleResize);
+  document.addEventListener('keydown', onKeydown);
+  const previousCleanup = window._viewCleanup;
+  window._viewCleanup = () => { previousCleanup?.(); window.removeEventListener('resize', handleResize); document.removeEventListener('keydown', onKeydown); modal.remove(); };
+}
+
+function installTermModal(root, docId) {
+  if (docId !== '05') return;
+  const PHRASE = 'Convergence Divergence';
+  const heading = [...root.querySelectorAll('h2, h3')].find((h) => h.textContent.includes(PHRASE));
+  if (!heading) return;
+  const walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT);
+  const textNode = [...(function* () { let n; while ((n = walker.nextNode())) yield n; })()].find((n) => n.nodeValue.includes(PHRASE));
+  if (!textNode) return;
+  const index = textNode.nodeValue.indexOf(PHRASE);
+  const before = textNode.nodeValue.slice(0, index);
+  const after = textNode.nodeValue.slice(index + PHRASE.length);
+  const trigger = document.createElement('button');
+  trigger.type = 'button';
+  trigger.className = 'vocabulary-term term-trigger';
+  trigger.dataset.termModal = 'convergence-divergence';
+  trigger.setAttribute('aria-label', `${PHRASE} 용어 설명 보기`);
+  trigger.textContent = PHRASE;
+  const fragment = document.createDocumentFragment();
+  if (before) fragment.append(before);
+  fragment.append(trigger);
+  if (after) fragment.append(after);
+  textNode.replaceWith(fragment);
+
+  const modal = document.createElement('div');
+  modal.className = 'vocabulary-modal-backdrop';
+  modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-labelledby', 'term-modal-cd-title');
+  modal.innerHTML = `
+    <section class="vocabulary-modal">
+      <header class="vocabulary-modal-header">
+        <div><span class="vocabulary-modal-icon"><i class="fa-solid fa-arrows-left-right-to-line"></i></span><div><p>주식 용어 바로 알기</p><h2 id="term-modal-cd-title">수렴(Convergence)과 발산(Divergence)</h2></div></div>
+        <button type="button" class="vocabulary-modal-close" aria-label="설명 닫기"><i class="fa-solid fa-xmark"></i></button>
+      </header>
+      <div class="vocabulary-modal-content">
+        <p>수렴(Convergence)과 발산(Divergence)은 두 개 이상의 요소가 하나의 점으로 모이거나(수렴), 반대로 서로 멀어지며 갈라지는 현상(발산)을 뜻합니다. 분야에 따라 핵심 의미가 달라집니다.</p>
+        <section><h3><i class="fa-solid fa-chart-line"></i> 주식/트레이딩 (MACD)</h3><p>이동평균 수렴·발산 지표(MACD)에서 <b>수렴</b>은 단기/장기 이동평균선이 가까워지는 상태(추세 약화)를, <b>발산</b>은 두 선이 멀어지는 상태(추세 강화)를 의미합니다. 주가 방향과 지표 방향이 반대로 움직이는 '다이버전스(Divergence)'는 추세 전환 신호로 활용됩니다.</p></section>
+        <section><h3><i class="fa-solid fa-square-root-variable"></i> 수학 및 미적분학</h3><p><b>수렴</b>은 수열이나 무한급수가 특정 수치에 한없이 가까워지는 상태를 뜻하며, <b>발산</b>은 값이 무한히 커지거나 특정한 값으로 모이지 않고 진동하는 상태를 의미합니다.</p></section>
+        <section><h3><i class="fa-solid fa-dna"></i> 진화생물학</h3><p><b>수렴 진화</b>는 서로 다른 종이 비슷한 환경에 적응하며 닮아가는 현상(예: 새와 박쥐의 날개)이며, <b>분산(발산) 진화</b>는 같은 조상에서 갈라져 나온 종들이 서로 다른 형질로 변하는 현상입니다.</p></section>
+        <section><h3><i class="fa-solid fa-lightbulb"></i> 광학 (렌즈)</h3><p>빛을 한 곳으로 모으는 렌즈를 <b>수렴렌즈(볼록렌즈)</b>, 빛을 퍼뜨리는 렌즈를 발산렌즈(오목렌즈)라고 합니다.</p></section>
+      </div>
+    </section>`;
+  document.body.appendChild(modal);
+
+  const closeButton = modal.querySelector('.vocabulary-modal-close');
+  let lastFocused = null;
+  const closeModal = () => { modal.classList.remove('show'); document.body.classList.remove('modal-open'); lastFocused?.focus(); };
+  const onKeydown = (event) => { if (event.key === 'Escape' && modal.classList.contains('show')) closeModal(); };
+  trigger.addEventListener('click', () => { lastFocused = trigger; modal.classList.add('show'); document.body.classList.add('modal-open'); closeButton.focus(); });
+  closeButton.addEventListener('click', closeModal);
+  modal.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });
+  document.addEventListener('keydown', onKeydown);
+  const previousCleanup = window._viewCleanup;
+  window._viewCleanup = () => { previousCleanup?.(); document.removeEventListener('keydown', onKeydown); modal.remove(); };
+}
+
 function installAtrSimulator(root, docId) {
   const trigger = root.querySelector('[data-atr-simulator]');
   if (docId !== '05' || !trigger) return;
@@ -1212,28 +1440,40 @@ function installAtrSimulator(root, docId) {
   modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-labelledby', 'atr-modal-title');
   modal.innerHTML = `
     <section class="atr-modal">
-      <header class="atr-modal-header"><div><span class="atr-modal-icon"><i class="fa-solid fa-gauge-high"></i></span><div><h2 id="atr-modal-title">ATR 변동성 시뮬레이터</h2><p>추세와 흔들림을 바꾸면 최근 30일 가상 캔들에서 TR·ATR이 어떻게 달라지는지 확인합니다.</p></div></div><button type="button" class="atr-modal-close" aria-label="ATR 시뮬레이터 닫기"><i class="fa-solid fa-xmark"></i></button></header>
+      <header class="atr-modal-header"><div><span class="atr-modal-icon"><i class="fa-solid fa-gauge-high"></i></span><div><h2 id="atr-modal-title">ATR 변동성 시뮬레이터</h2><p>슬라이더 2개만 움직여 보세요. 가격이 얼마나 거세게 흔들리는지(ATR)가 바로 바뀝니다.</p></div></div><button type="button" class="atr-modal-close" aria-label="ATR 시뮬레이터 닫기"><i class="fa-solid fa-xmark"></i></button></header>
       <div class="atr-simulator">
-        <section class="atr-terms"><p><b>TR</b>(True Range, 진폭) — 당일 고가·저가 차이와 전일 종가 대비 갭까지 반영해, 그날 실제로 움직인 폭 중 가장 큰 값을 고른 것입니다.</p><p><b>ATR</b>(Average True Range, 평균진폭) — TR 값을 일정 기간(기본 14일) 동안 이동평균한 값으로, 방향이 아니라 변동성의 크기를 보여 줍니다.</p></section>
-        <section class="atr-inputs"><div class="atr-section-heading"><span>STEP 1</span><h3>가격 흐름을 만들어 보세요</h3><p>하루 평균 변화율·흔들림 폭</p></div><div class="atr-input-grid">
-          <label>시작 가격<input type="number" data-atr-input="price" value="50000" min="100" step="1000"></label>
-          <label>하루 평균 변화율<input type="range" data-atr-input="trend" value="0.6" min="-3" max="3" step="0.1"><output data-atr-output="trend"></output></label>
-          <label>하루 흔들림<input type="range" data-atr-input="volatility" value="0.8" min="0.1" max="3" step="0.1"><output data-atr-output="volatility"></output></label>
+        <section class="atr-howto" aria-label="사용법">
+          <b>이렇게 써 보세요</b>
+          <ol>
+            <li><b>가격 방향(추세)</b> 슬라이더를 오른쪽으로 밀면 매일 조금씩 오르는 흐름, 왼쪽으로 밀면 내리는 흐름이 만들어져요.</li>
+            <li><b>흔들림(변동성)</b> 슬라이더를 오른쪽으로 밀수록 하루하루 가격이 크게 출렁여요.</li>
+            <li>아래 차트와 숫자가 바로 바뀌어요. <b>흔들림만 키워도 ATR이 커지고, 방향만 바꿔도 ATR은 거의 그대로</b>인 것을 직접 확인해 보세요.</li>
+          </ol>
+        </section>
+        <section class="atr-inputs"><div class="atr-input-grid">
+          <label>가격 방향(추세)<input type="range" data-atr-input="trend" value="0.6" min="-3" max="3" step="0.1"><output data-atr-output="trend"></output></label>
+          <label>흔들림(변동성)<input type="range" data-atr-input="volatility" value="0.8" min="0.1" max="3" step="0.1"><output data-atr-output="volatility"></output></label>
         </div></section>
         <section class="atr-chart-wrap"><canvas data-atr-chart aria-label="가상 캔들과 ATR 흐름 차트"></canvas></section>
-        <section class="atr-results" aria-live="polite">
-          <article><span>마지막 종가</span><strong data-atr-output="close"></strong><small>30일 가상 흐름의 마지막 값</small></article>
-          <article><span>당일 TR</span><strong data-atr-output="tr"></strong><small>고가·저가·전일종가로 계산한 오늘의 진폭</small></article>
-          <article><span>ATR(14)</span><strong data-atr-output="atr"></strong><small>최근 14일 TR의 평균</small></article>
-          <article><span>ATR ÷ 종가</span><strong data-atr-output="atrPct"></strong><small>가격 대비 변동성 크기</small></article>
+        <section class="atr-guide" aria-label="차트 읽는 법">
+          <p><i style="background:#e11d48"></i><b>위 칸 = 30일 가상 캔들</b> — 빨간 캔들은 종가가 시가보다 높은 날(오른 날), <i style="background:#2563eb"></i>파란 캔들은 내린 날이에요. 캔들의 세로선(꼬리)은 그날 고가부터 저가까지 실제로 움직인 범위예요.</p>
+          <p><i style="background:#b45309"></i><b>아래 칸 주황 선 = ATR(14)</b> — 최근 14일 동안 ‘하루에 움직인 폭’을 평균 낸 값이에요. 선이 올라가면 요즘 하루 변동폭이 커졌다는 뜻이고, 내려가면 잠잠해졌다는 뜻이에요. 가격이 오르는지 내리는지는 알려 주지 않아요.</p>
+          <p><b>TR(진폭)이란?</b> — 그날의 ‘고가−저가’, ‘고가−전일 종가’, ‘저가−전일 종가’ 세 값 중 가장 큰 것이에요. 전날보다 크게 뛰어서 시작한 갭까지 포함해 “실제로 얼마나 움직였나”를 재요. ATR은 이 TR을 14일 평균한 값이에요.</p>
+          <p><b>ATR ÷ 종가(%)는 왜 보나요?</b> — 5만원짜리 주식의 500원과 50만원짜리 주식의 500원은 의미가 다르니, 가격 대비 비율로 바꿔 비교해요. 이 시뮬레이터에서는 대략 1.2% 아래면 낮은 변동성, 1.2~3%면 보통, 3%를 넘으면 높은 변동성으로 표시해요.</p>
+          <p><b>어디에 쓰나요?</b> — 손절 폭을 정할 때 ‘종가 − ATR×2’처럼 ATR의 배수를 쓰면, 평소 흔들림 범위 안에서 출렁이다 손절당하는 일을 줄일 수 있어요. 배수(1.5배·2배)는 예시일 뿐이며, 방향 판단은 이동평균선·추세·거래량과 함께 해야 해요.</p>
         </section>
-        <section class="atr-reading"><div class="atr-section-heading"><span>STEP 2</span><h3>ATR을 읽는 방법</h3><p>방향이 아니라 크기입니다</p></div><p data-atr-reading></p>
+        <section class="atr-results" aria-live="polite">
+          <article><span>ATR(14)</span><strong data-atr-output="atr"></strong><small>최근 14일 평균 변동폭</small></article>
+          <article><span>변동성 수준</span><strong data-atr-output="atrPct"></strong><small data-atr-badge></small></article>
+        </section>
+        <p class="atr-plain" data-atr-reading></p>
+        <details class="atr-detail"><summary>계산 과정·참고 손절가 자세히 보기</summary>
           <ol>
             <li><b>TR</b><span data-atr-formula="tr"></span></li>
             <li><b>ATR</b><span data-atr-formula="atr"></span></li>
             <li><b>참고 손절가</b><span data-atr-formula="stop"></span></li>
           </ol>
-        </section>
+        </details>
         <footer class="atr-note"><i class="fa-solid fa-circle-info"></i> ATR은 변동성의 크기만 보여 줄 뿐 방향을 알려 주지 않습니다. 손절·목표가 배수는 예시일 뿐이며, 이동평균선·추세·거래량과 함께 확인하세요.<button type="button" data-atr-reset>예시값으로 초기화</button></footer>
       </div>
     </section>`;
@@ -1264,7 +1504,7 @@ function installAtrSimulator(root, docId) {
   };
   const update = () => {
     const value = (name) => Number(modal.querySelector(`[data-atr-input="${name}"]`).value) || 0;
-    const price = value('price'); const trend = value('trend'); const volatility = Math.max(.1, value('volatility'));
+    const price = 50000; const trend = value('trend'); const volatility = Math.max(.1, value('volatility'));
     const closes = [price];
     for (let index = 1; index < 31; index += 1) { const wave = Math.sin(index * 1.71) * volatility + Math.cos(index * .63) * volatility * .45; closes.push(Math.max(1, closes.at(-1) * (1 + (trend + wave) / 100))); }
     const candles = closes.map((close, index) => {
@@ -1276,9 +1516,9 @@ function installAtrSimulator(root, docId) {
     const lastClose = candles.at(-1).c; const lastTr = trValues.at(-1); const lastAtr = atrValues.at(-1); const atrPct = lastAtr / lastClose * 100;
     const stop2x = lastClose - 2 * lastAtr; const stop15x = lastClose - 1.5 * lastAtr;
     modal.querySelector('[data-atr-output="trend"]').value = `${trend >= 0 ? '+' : ''}${format(trend)}%`; modal.querySelector('[data-atr-output="volatility"]').value = `${format(volatility)}%`;
-    modal.querySelector('[data-atr-output="close"]').textContent = `${format(lastClose, 0)}원`; modal.querySelector('[data-atr-output="tr"]').textContent = `${format(lastTr, 0)}원`;
     modal.querySelector('[data-atr-output="atr"]').textContent = `${format(lastAtr, 0)}원`; modal.querySelector('[data-atr-output="atrPct"]').textContent = `${format(atrPct, 2)}%`;
     const level = atrPct >= 3 ? '높은' : atrPct >= 1.2 ? '보통' : '낮은';
+    modal.querySelector('[data-atr-badge]').textContent = `${level} 변동성`;
     modal.querySelector('[data-atr-reading]').textContent = `현재 ATR은 종가의 약 ${format(atrPct, 2)}%로, 이 가상 흐름 기준으로는 비교적 ${level} 변동성 구간입니다. ATR이 커졌다고 상승이나 하락 어느 한쪽을 의미하지는 않으며, 하락이 거세질 때도 함께 커질 수 있습니다.`;
     modal.querySelector('[data-atr-formula="tr"]').textContent = `고가 ${format(candles.at(-1).h, 0)}원 − 저가 ${format(candles.at(-1).l, 0)}원, │고가−전일종가│, │저가−전일종가│ 중 최대값 = ${format(lastTr, 0)}원`;
     modal.querySelector('[data-atr-formula="atr"]').textContent = `최근 14일 TR 평균 = ${format(lastAtr, 0)}원`;
@@ -1596,23 +1836,25 @@ function installCircuitBreakerModal(root, docId) {
 function installVixKospiModal(root, docId) {
   const trigger = root.querySelector('[data-vix-kospi]'); if (docId !== '05' || !trigger) return;
   const modal = document.createElement('div'); modal.className = 'vix-kospi-modal-backdrop'; modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-labelledby', 'vix-kospi-modal-title');
-  modal.innerHTML = `<section class="vix-kospi-modal"><header><div><span><i class="fa-solid fa-gauge-high"></i></span><div><h2 id="vix-kospi-modal-title">VIX vs KOSPI 지수</h2><p>최근 3개월 VIX 시계열과 KOSPI 지수 변동을 한 차트에서 함께 확인합니다.</p></div></div><button type="button" data-vix-kospi-close aria-label="닫기"><i class="fa-solid fa-xmark"></i></button></header><main><p class="vix-kospi-status" data-vix-kospi-status>불러오는 중...</p><section class="vix-kospi-chart-wrap"><canvas data-vix-kospi-chart aria-label="VIX와 KOSPI 지수 이중축 비교 차트. VIX 위험도 기준선 15, 20, 30을 포함합니다."></canvas></section><section class="vix-kospi-summary" data-vix-kospi-summary aria-live="polite"></section><p class="vix-kospi-note" data-vix-kospi-note></p></main></section>`;
+  modal.innerHTML = `<section class="vix-kospi-modal"><header><div><span><i class="fa-solid fa-gauge-high"></i></span><div><h2 id="vix-kospi-modal-title">VIX · VKOSPI vs KOSPI 지수</h2><p>미국 VIX(S&amp;P 500 옵션)와 한국 VKOSPI(코스피200 옵션) 변동성지수를 KOSPI 지수와 같은 화면에서 봅니다. 기간을 바꿔 변동성이 높았던 시기를 확인해 보세요.</p></div></div><button type="button" data-vix-kospi-close aria-label="닫기"><i class="fa-solid fa-xmark"></i></button></header><main><div class="vix-kospi-tabs" role="tablist" aria-label="조회 기간"><button type="button" data-vix-period="3mo" class="is-active">최근 3개월</button><button type="button" data-vix-period="6mo">최근 6개월</button><button type="button" data-vix-period="1y">최근 1년</button></div><p class="vix-kospi-status" data-vix-kospi-status>불러오는 중...</p><section class="vix-kospi-chart-wrap"><canvas data-vix-kospi-chart aria-label="VIX와 KOSPI 지수 이중축 비교 차트. VIX 위험도 기준선 15, 20, 30을 포함합니다."></canvas></section><section class="vix-kospi-summary" data-vix-kospi-summary aria-live="polite"></section><p class="vix-kospi-note" data-vix-kospi-note></p></main></section>`;
   document.body.appendChild(modal);
   const canvas = modal.querySelector('[data-vix-kospi-chart]'); const status = modal.querySelector('[data-vix-kospi-status]');
+  let period = '3mo';
+  modal.querySelectorAll('[data-vix-period]').forEach((button) => button.addEventListener('click', () => { period = button.dataset.vixPeriod; modal.querySelectorAll('[data-vix-period]').forEach((tab) => tab.classList.toggle('is-active', tab === button)); load(); }));
   const summary = modal.querySelector('[data-vix-kospi-summary]'); const note = modal.querySelector('[data-vix-kospi-note]'); const closeButton = modal.querySelector('[data-vix-kospi-close]');
   let lastFocused = null; let requestId = 0;
-  const draw = (vixPoints, kospiPoints) => {
+  const draw = (vixPoints, kospiPoints, vkospiPoints = []) => {
     const dpr = Math.min(window.devicePixelRatio || 1, 2); const width = Math.max(380, canvas.parentElement.clientWidth - 2); const height = 320;
     canvas.width = width * dpr; canvas.height = height * dpr; canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
     const ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.fillStyle = '#fbfdff'; ctx.fillRect(0, 0, width, height);
     const left = 46; const right = 46; const top = 24; const bottom = 34; const chartWidth = width - left - right; const chartHeight = height - top - bottom;
-    const vixValues = vixPoints.map((p) => p.close); const kospiValues = kospiPoints.map((p) => p.close);
+    const vixValues = [...vixPoints, ...vkospiPoints].map((p) => p.close); const kospiValues = kospiPoints.map((p) => p.close);
     // 15·20·30은 VIX를 읽을 때 자주 쓰는 대략적인 위험도 눈금입니다. 모든 기준선을
     // 같은 축에 보여 주기 위해 데이터 범위에도 포함합니다.
     const vixMin = Math.min(...vixValues, 15) * .9; const vixMax = Math.max(...vixValues, 30) * 1.1; const vixGap = Math.max(vixMax - vixMin, 1);
     const kospiMin = Math.min(...kospiValues) * .98; const kospiMax = Math.max(...kospiValues) * 1.02; const kospiGap = Math.max(kospiMax - kospiMin, 1);
     const n = Math.max(vixPoints.length, kospiPoints.length);
-    const x = (index) => left + index * chartWidth / Math.max(n - 1, 1);
+    const x = (index, length = n) => left + index * chartWidth / Math.max(length - 1, 1);
     const yVix = (value) => top + (vixMax - value) / vixGap * chartHeight; const yKospi = (value) => top + (kospiMax - value) / kospiGap * chartHeight;
     const riskLines = [
       { value: 15, label: '15 · 낮음', color: '#22c55e' },
@@ -1624,22 +1866,23 @@ function installVixKospiModal(root, docId) {
       ctx.save(); ctx.setLineDash([5, 4]); ctx.strokeStyle = `${color}99`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(left, py); ctx.lineTo(width - right, py); ctx.stroke();
       ctx.setLineDash([]); ctx.fillStyle = color; ctx.font = '700 10px Pretendard, sans-serif'; ctx.textAlign = 'start'; ctx.fillText(label, left + 5, py - 4); ctx.restore();
     });
-    ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2.2; ctx.beginPath(); vixPoints.forEach((p, index) => { const px = x(index); const py = yVix(p.close); index ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }); ctx.stroke();
-    ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2.2; ctx.beginPath(); kospiPoints.forEach((p, index) => { const px = x(index); const py = yKospi(p.close); index ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }); ctx.stroke();
-    ctx.fillStyle = '#ef4444'; ctx.font = '600 10px Pretendard, sans-serif'; ctx.textAlign = 'start'; ctx.fillText('VIX', 4, top + 4);
+    ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2.2; ctx.beginPath(); vixPoints.forEach((p, index) => { const px = x(index, vixPoints.length); const py = yVix(p.close); index ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }); ctx.stroke();
+    if (vkospiPoints.length) { ctx.strokeStyle = '#7c3aed'; ctx.lineWidth = 2.2; ctx.beginPath(); vkospiPoints.forEach((p, index) => { const px = x(index, vkospiPoints.length); const py = yVix(p.close); index ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }); ctx.stroke(); }
+    ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2.2; ctx.beginPath(); kospiPoints.forEach((p, index) => { const px = x(index, kospiPoints.length); const py = yKospi(p.close); index ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }); ctx.stroke();
+    ctx.fillStyle = '#ef4444'; ctx.font = '600 10px Pretendard, sans-serif'; ctx.textAlign = 'start'; ctx.fillText('VIX(미국)', 4, top + 4); if (vkospiPoints.length) { ctx.fillStyle = '#7c3aed'; ctx.fillText('VKOSPI(한국)', 56, top + 4); }
     ctx.fillStyle = '#2563eb'; ctx.textAlign = 'end'; ctx.fillText('KOSPI', width - 4, top + 4);
-    ctx.fillStyle = '#64748b'; ctx.textAlign = 'center'; vixPoints.forEach((p, index) => { if (index % Math.ceil(n / 6) === 0 || index === n - 1) ctx.fillText(p.date.slice(5), x(index), height - 12); }); ctx.textAlign = 'start';
+    ctx.fillStyle = '#64748b'; ctx.textAlign = 'center'; vixPoints.forEach((p, index) => { if (index % Math.ceil(vixPoints.length / 6) === 0 || index === vixPoints.length - 1) ctx.fillText(p.date.slice(5), x(index, vixPoints.length), height - 12); }); ctx.textAlign = 'start';
   };
   const load = async () => {
     const activeRequest = ++requestId; status.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 최근 3개월 데이터를 불러오는 중…'; summary.replaceChildren();
     try {
-      const response = await fetch('/api/market/vix-vs-kospi?period=3mo'); const data = await response.json(); if (!response.ok) throw new Error(data.detail || `HTTP ${response.status}`); if (activeRequest !== requestId) return;
-      const vix = data.series.vix; const kospi = data.series.kospi;
-      draw(vix.points, kospi.points);
-      status.textContent = `최근 ${data.period} · Yahoo Finance 일봉 기준`;
+      const response = await fetch(`/api/market/vix-vs-kospi?period=${period}`); const data = await response.json(); if (!response.ok) throw new Error(data.detail || `HTTP ${response.status}`); if (activeRequest !== requestId) return;
+      const vix = data.series.vix; const kospi = data.series.kospi; const vkospi = data.series.vkospi;
+      draw(vix.points, kospi.points, vkospi ? vkospi.points : []);
+      status.textContent = `${({ '1mo': '최근 1개월', '3mo': '최근 3개월', '6mo': '최근 6개월', '1y': '최근 1년' })[data.period] || data.period} · VIX·KOSPI: Yahoo Finance 일봉 · VKOSPI: 한국거래소 Open API${data.vkospi_error ? ` · ${data.vkospi_error}` : ''}`;
       const latestVix = Number(vix.latest_close);
       const risk = latestVix <= 15 ? ['낮은 변동성 기대', '#15803d'] : latestVix < 20 ? ['보통 수준', '#2563eb'] : latestVix < 30 ? ['변동성 경계', '#b45309'] : ['고변동성 경계', '#dc2626'];
-      summary.innerHTML = `<article><span style="color:#ef4444;">■</span> ${vix.label}<strong>${vix.latest_close} (${vix.period_change >= 0 ? '+' : ''}${vix.period_change})</strong></article><article><span style="color:#2563eb;">■</span> ${kospi.label}<strong>${Math.round(kospi.latest_close).toLocaleString('ko-KR')} (${kospi.period_change >= 0 ? '+' : ''}${Math.round(kospi.period_change).toLocaleString('ko-KR')})</strong></article><article class="vix-risk-reading"><span>VIX 위험도 눈금</span><strong style="color:${risk[1]};">${risk[0]}</strong><small>15 · 20 · 30 기준선 참고</small></article>`;
+      summary.innerHTML = `${vkospi ? `<article><span style="color:#7c3aed;">■</span> ${vkospi.label}<strong>${vkospi.latest_close} (${vkospi.period_change >= 0 ? '+' : ''}${vkospi.period_change})</strong></article>` : ''}<article><span style="color:#ef4444;">■</span> ${vix.label}<strong>${vix.latest_close} (${vix.period_change >= 0 ? '+' : ''}${vix.period_change})</strong></article><article><span style="color:#2563eb;">■</span> ${kospi.label}<strong>${Math.round(kospi.latest_close).toLocaleString('ko-KR')} (${kospi.period_change >= 0 ? '+' : ''}${Math.round(kospi.period_change).toLocaleString('ko-KR')})</strong></article><article class="vix-risk-reading"><span>VIX 위험도 눈금</span><strong style="color:${risk[1]};">${risk[0]}</strong><small>15 · 20 · 30 기준선 참고</small></article>`;
       note.textContent = data.note;
     } catch (error) { if (activeRequest === requestId) status.textContent = `데이터를 불러오지 못했습니다: ${error.message || '잠시 후 다시 시도해 주세요.'}`; }
   };
@@ -2190,6 +2433,7 @@ export function learnView(app, docId) {
     // Mermaid 소스는 VIEW 배지로 표시하고 클릭 시 모달에서 렌더링한다.
     renderMermaidBlocks(mdContent).catch((err) => console.error('Mermaid 로드 실패:', err));
     installMacroNewsSimulator(mdContent, docId);
+    installMaCrossSimulator(mdContent, docId);
     installRsiMacdSimulator(mdContent, docId);
     installAtrSimulator(mdContent, docId);
     installOpeningSessionModal(mdContent, docId);
@@ -2216,6 +2460,7 @@ export function learnView(app, docId) {
     installDcfSimulator(mdContent, docId);
     installCapmSimulator(mdContent, docId);
     installVocabularyModal(mdContent, vocabulary);
+    installTermModal(mdContent, docId);
     installIntegratedContentModal(mdContent, docId);
 
     // docs/*.md의 외부 홈페이지 링크는 학습 화면을 유지한 채 별도 창에서 연다.

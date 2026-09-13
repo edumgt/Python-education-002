@@ -34,8 +34,11 @@ services:
       LEX_BOT_ALIAS_ID: ${LEX_BOT_ALIAS_ID:-}
       LEX_LOCALE_ID: ${LEX_LOCALE_ID:-ko_KR}
       AWS_PROFILE: ${AWS_PROFILE:-investment-analysis-lex}
+      KRX_KEY_FILE: /run/secrets/krx.key
     volumes:
       - ./docs:/app/docs:ro
+      # KRX Open API 인증키(.key의 KRX_KEY=...)를 읽기 전용으로 제공한다. 파일이 없으면 VKOSPI만 생략된다.
+      - ./.key:/run/secrets/krx.key:ro
       # Lex 전용 최소권한 프로필을 읽기 전용으로 제공합니다.
       - ${AWS_SHARED_CREDENTIALS_DIR:-/root/.aws}:/root/.aws:ro
     depends_on:

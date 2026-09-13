@@ -2044,6 +2044,90 @@ def market_sox_vs_korea_semicon(sector: str = "semicon", period: str = "6mo") ->
     }
 
 
+_VKOSPI_INDEX_NAME = "코스피 200 변동성지수"
+_VKOSPI_CACHE: dict[str, float | None] = {}
+_VKOSPI_CACHE_LOADED = False
+
+
+def _krx_auth_key() -> str | None:
+    """KRX Open API 인증키. 환경변수 → KRX_KEY_FILE → 저장소 루트 .key 순으로 찾는다."""
+    import os
+    import re
+    from pathlib import Path
+
+    direct = os.getenv("KRX_API_KEY", "").strip()
+    if direct:
+        return direct
+    candidates = [os.getenv("KRX_KEY_FILE", "").strip(), str(Path(__file__).resolve().parents[2] / ".key")]
+    for candidate in candidates:
+        if not candidate:
+            continue
+        try:
+            text = Path(candidate).read_text(encoding="utf-8")
+        except OSError:
+            continue
+        match = re.search(r"^\s*KRX_KEY\s*=\s*['\"]?([A-Za-z0-9]+)['\"]?\s*$", text, re.M)
+        if match:
+            return match.group(1)
+    return None
+
+
+def _vkospi_cache_file():
+    import tempfile
+    from pathlib import Path
+
+    return Path(tempfile.gettempdir()) / "vkospi_cache.json"
+
+
+def _fetch_vkospi_close(bas_dd: str, key: str) -> tuple[bool, float | None]:
+    """(성공 여부, 종가). 휴장일 등 데이터가 없으면 (True, None), 통신 오류면 (False, None)."""
+    import json
+    import urllib.request
+
+    url = f"https://data-dbg.krx.co.kr/svc/apis/idx/drvprod_dd_trd?basDd={bas_dd}"
+    request = urllib.request.Request(url, headers={"AUTH_KEY": key, "User-Agent": "Mozilla/5.0"})
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            rows = json.loads(response.read().decode("utf-8")).get("OutBlock_1", [])
+    except Exception:
+        return False, None
+    for row in rows:
+        if row.get("IDX_NM") == _VKOSPI_INDEX_NAME:
+            try:
+                return True, float(str(row.get("CLSPRC_IDX", "")).replace(",", ""))
+            except ValueError:
+                return True, None
+    return True, None
+
+
+def _vkospi_closes(dates: list[str], key: str) -> dict[str, float]:
+    """KRX Open API는 날짜별 조회만 되므로 거래일마다 병렬 조회하고 결과를 캐시한다."""
+    import json
+    from concurrent.futures import ThreadPoolExecutor
+
+    global _VKOSPI_CACHE_LOADED
+    cache_file = _vkospi_cache_file()
+    if not _VKOSPI_CACHE_LOADED:
+        try:
+            _VKOSPI_CACHE.update(json.loads(cache_file.read_text(encoding="utf-8")))
+        except Exception:
+            pass
+        _VKOSPI_CACHE_LOADED = True
+
+    keys = {date: date.replace("-", "") for date in dates}
+    missing = [bas for bas in keys.values() if bas not in _VKOSPI_CACHE]
+    if missing:
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            for bas, (ok, close) in zip(missing, pool.map(lambda d: _fetch_vkospi_close(d, key), missing)):
+                if ok:
+                    _VKOSPI_CACHE[bas] = close
+        try:
+            cache_file.write_text(json.dumps(_VKOSPI_CACHE), encoding="utf-8")
+        except OSError:
+            pass
+    return {date: _VKOSPI_CACHE[bas] for date, bas in keys.items() if _VKOSPI_CACHE.get(bas) is not None}
+
+
 @app.get("/api/market/vix-vs-kospi")
 def market_vix_vs_kospi(period: str = "3mo") -> dict[str, object]:
     """최근 VIX 시계열과 KOSPI 지수 변동을 함께 반환한다."""
@@ -2080,10 +2164,31 @@ def market_vix_vs_kospi(period: str = "3mo") -> dict[str, object]:
             "period_change": period_change, "latest_close": points[-1]["close"],
         }
 
+    vkospi_error: str | None = None
+    krx_key = _krx_auth_key()
+    if not krx_key:
+        vkospi_error = "KRX Open API 키가 설정되지 않아 한국 VKOSPI는 표시하지 못했습니다."
+    else:
+        try:
+            kospi_dates = [point["date"] for point in series["kospi"]["points"]]
+            closes = _vkospi_closes(kospi_dates, krx_key)
+            vkospi_points = [{"date": date, "close": round(closes[date], 2)} for date in kospi_dates if date in closes]
+            if len(vkospi_points) >= 2:
+                series["vkospi"] = {
+                    "label": "VKOSPI 200 (코스피200 옵션 내재변동성)", "ticker": f"KRX {_VKOSPI_INDEX_NAME}",
+                    "points": vkospi_points,
+                    "period_change": round(vkospi_points[-1]["close"] - vkospi_points[0]["close"], 2),
+                    "latest_close": vkospi_points[-1]["close"],
+                }
+            else:
+                vkospi_error = "한국 VKOSPI 데이터를 충분히 받지 못했습니다."
+        except Exception as exc:  # KRX 장애가 있어도 VIX·KOSPI는 계속 보여 준다.
+            vkospi_error = f"한국 VKOSPI 데이터를 가져오지 못했습니다: {exc}"
+
     return {
-        "period": period, "series": series,
-        "source": "Yahoo Finance 일봉 종가",
-        "note": "VIX는 미국 S&P 500 옵션 시장의 향후 30일 기대 변동성이고 KOSPI는 한국 대형주 중심 가격지수여서, 기준 시장과 계산 방식이 서로 다릅니다. VIX가 오른 날에 KOSPI가 반드시 내리는 것은 아니며, 두 지표를 같은 화면에서 함께 관찰하는 참고용 자료입니다.",
+        "period": period, "series": series, "vkospi_error": vkospi_error,
+        "source": "VIX·KOSPI: Yahoo Finance 일봉 종가 · VKOSPI: 한국거래소 정보데이터시스템 Open API",
+        "note": "VIX는 미국 S&P 500 옵션, VKOSPI는 한국 코스피200 옵션 시장에서 계산한 향후 30일 기대 변동성이고, KOSPI는 한국 대형주 중심 가격지수여서 기준 시장과 계산 방식이 서로 다릅니다. 변동성지수가 오른 날에 KOSPI가 반드시 내리는 것은 아니며, 세 지표를 같은 화면에서 함께 관찰하는 참고용 자료입니다.",
     }
 
 
